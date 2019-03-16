@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>Bookings</title>
+    <h1>Result of research</h1>
+</head>
+<body>
+
+
+      <div>
+        <form action = "http://localhost:5000/load" method = "post" enctype = "multipart/form-data">
+            <h3>Load an extern source:</h3>
+        {% if not selected %}
+        <div>
+          {{msg}}
+          <br>
+          Here because of web page, it just dispalys first 20 rows.
+        </div>
+            <br>
+            <hr>
+          <select name=extFile  action="/">
+            {% for file in options %}
+            <option value= "{{file}}" SELECTED>{{file}}</option>"
+            {% endfor %}
+          </select>
+          <input type="submit" name="Submit" value="SubmitFile">
+        {% endif %}
+
+        {% if selected %}
+        <h3>Select column to map date:</h3>
+        <select name=mapCol  action="/">
+          {% for col in options %}
+          <option value= "{{col}}" SELECTED>{{col}}</option>"
+          {% endfor %}
+        </select>
+
+        <h3>Select data to integrate:</h3>
+        <select name=integCol1  action="/">
+          {% for col in options %}
+          <option value= "{{col}}" SELECTED>{{col}}</option>"
+          {% endfor %}
+        </select>
+
+        <select name=integCol2  action="/">
+          {% for col in options %}
+          <option value= "{{col}}" SELECTED>{{col}}</option>"
+          {% endfor %}
+        </select>
+
+        <select name=integCol3  action="/">
+          {% for col in options %}
+          <option value= "{{col}}" SELECTED>{{col}}</option>"
+          {% endfor %}
+        </select>
+          <input type="submit" name="Submit" value="SubmitCol">
+        {% endif %}
+
+        </form>
+      </div>
+      <br>
+  <div>
+    {% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+    {% endfor %}
+  </div>
+
+</body>
+</html>

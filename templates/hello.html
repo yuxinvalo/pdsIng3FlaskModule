@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<title>Bimycar data analyse center</title>
+<h1>Hello, This is a simple etraction tools</h1>
+<body>
+<h3>Please choose a duration of history data</h3>
+<form action = "http://localhost:5000/" method = "post">
+  From
+<select name=startDate  action="/">
+    {% for date in options %}
+    <option value= "{{date}}" SELECTED>{{date}}</option>"
+    {% endfor %}
+</select>
+  To
+  <select name=endDate action="/">
+      {% for date in options %}
+      <option value= "{{date}}" SELECTED>{{date}}</option>"
+      {% endfor %}
+  </select>
+</select>
+<p><input type="submit" name="Submit" value="Submit"></p>
+</form>
+
+<div>
+  <h3>Choose a file to integrate the history:</h3>
+  <form action = "http://localhost:5000/upload" method = "post" enctype = "multipart/form-data">
+    <input type = "file" name = "file" />
+    <input type = "submit"/>
+  </form>
+</div>
+
+</body>
+</html>

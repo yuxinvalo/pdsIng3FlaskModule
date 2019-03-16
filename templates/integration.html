@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>Integration</title>
+    <h1>Result of integration</h1>
+</head>
+<body>
+  Here because of web page, it just dispalys first 20 rows.
+  <hr>
+  <div>
+    {% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+    {% endfor %}
+  </div>
+
+  </body>
+  </html>
