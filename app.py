@@ -29,7 +29,7 @@ def index():
             if(utils.validateDate([startDate, endDate])):
                 targetBooking = utils.loadHistoryByDate(startDate, endDate)
                 targetBookingLimit = targetBooking.head(20)
-                files =  utils.getCurrentExternFile();
+                files =  utils.getFileInHadoop()
                 session['startDate'] =  startDate
                 session['endDate'] = endDate
                 return render_template("bookings.html", tables=[targetBookingLimit.to_html(classes='data')], \
@@ -48,9 +48,12 @@ def getUploadFile():
         filename = now + '_' + f.filename
         filename = secure_filename(filename)
         if utils.checkUploadFile(filename):
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            client_hdfs = utils.getClientHadoop()
+            df = pd.read_csv(f)
+            utils.saveToHadoop(df, filename, client_hdfs)
         else:
-            return 'This is not a csv file'
+            return 'This is not a csv file.'
     else:
         return 'no file chosen'
     return 'file uploaded successfully'

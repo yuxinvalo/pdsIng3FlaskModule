@@ -2,6 +2,9 @@ import pandas as pd
 from datetime import datetime as dt
 import random
 import glob
+from hdfs import InsecureClient
+import os
+import subprocess
 
 def getAvailableDate(source):
     history = pd.read_csv(source)
@@ -43,6 +46,18 @@ def getCurrentExternFile():
     # return render_template('bookings.html',  options=files)
     return files
 
+def getFileInHadoop():
+    p = subprocess.Popen("hdfs dfs -ls |awk '{print $8}'",
+    shell=True,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT)
+    s_output, s_err = p.communicate()
+    allFiles = s_output.split()
+    res = []
+    for ele in allFiles:
+        res.append(ele.decode("utf-8"))
+    return res
+
 def checkUploadFile(filename):
     print(filename[-4 ::])
     if filename[-4 ::] != '.csv':
@@ -61,26 +76,13 @@ def integrateData(mapCol, integrateCols, startDate, endDate, externFile):
     for ele in integrateCols:
         df[ele] = df['DATE'].map(extdf.set_index('DATE')[ele])
     return df
-# def insertRandom(df):
-#     print("--inset value--")
-#     nb = random.randint(0, int(df.shape[0]/4))
-#     df = df.reset_index(drop=False)
-#     indexs = []
-#     for i in range(0, nb):
-#         index = random.randint(0, df.shape[0])
-#         indexs.append(index)
-#     for i in indexs:
-#         df.set_value(i,'isLate', 1)
-#     df = df.set_index('DATE', inplace=True)
-#     return df
 
-# import predict
-# startDate = '2018-08-20'
-# endDate = '2018-08-30'
-# data = predict.lrByDate([startDate, endDate])
-# data.set_index(['DATE'], inplace=True)
-# data = data[(data['isLate']==1)]
-# if data:
-#     print(data.shape)
-# else:
-#     print("None")
+def saveToHadoop(df, name, client_hdfs):
+    with client_hdfs.write(name, encoding = 'utf-8') as writer:
+        df.to_csv(writer)
+
+def getClientHadoop():
+    ADDR="http://127.0.0.1:50070"
+# Connecting to Webhdfs by providing hdfs host ip and webhdfs port (50070 by default)
+    client_hdfs = InsecureClient(ADDR)
+    return client_hdfs
